@@ -55,3 +55,14 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
         res.status(500).send('Error generating QR code');
     }
 });
+
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+
+
+// Test API
+app.get('/api/hello', async (req, res) => {
+    res.send('Hello World!');
+});
