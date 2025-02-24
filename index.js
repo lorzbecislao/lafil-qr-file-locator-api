@@ -19,7 +19,10 @@ const corsOptions = {
     allowedHeaders: ['Content-Type'], // Allowed headers
 };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+// TODO:: Revert cors options on production
+// Allow all origin on dev only
+app.use(cors());
 app.use('/uploads', express.static('uploads')); 
 
 const storage = multer.diskStorage({
@@ -40,7 +43,8 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
         return res.status(400).send('No file uploaded');
     }
     
-    const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    // TODO:: Update IP for production 
+    const fileUrl = `${process.env.APP_LOCAL_IP}:${port}/uploads/${req.file.filename}`;
   
     // Generate the QR code for the file location
     try {
@@ -56,11 +60,9 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     }
 });
 
-
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
-
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server is running on http://0.0.0.0:${port}`);
+  });
 
 // Test API
 app.get('/api/hello', async (req, res) => {
